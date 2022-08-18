@@ -1,0 +1,5 @@
+resources:
+  - ../../base
+  - fluentd-ns.yaml
+  - fluentd-rbac.yaml
+  

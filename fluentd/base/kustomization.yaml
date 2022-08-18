@@ -1,0 +1,12 @@
+resources:
+  - fluentd.properties.yaml
+
+namespace: fluentd
+
+configMapGenerator:
+  - name: fluentd-config
+    files:
+      - ./conf/fluent.conf
+      - ./conf/sources.conf
+      - ./conf/filters.conf
+      - ./conf/outputs.conf
