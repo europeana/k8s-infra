@@ -28,10 +28,12 @@ spec:
         env:
          # Only supports one host: https://github.com/fluent/fluentd/issues/2957
          # We need to override the plugin to distribute logs across our ES cluster
-          - name:  FLUENT_ELASTICSEARCH_HOST
-            value: "${ELASTIC_SEARCH_HOST}"
-          - name:  FLUENT_ELASTICSEARCH_PORT
-            value: "${ELASTIC_SEARCH_PORT}"
+          - name:  EANA_ELASTICSEARCH_HOSTS
+            value: "${ELASTIC_SEARCH_HOSTS}"
+          - name:  EANA_ELASTICSEARCH_INDEX
+            value: "${ELASTIC_SEARCH_INDEX}"
+          - name:  FLUENTD_SYSTEMD_CONF
+            value: 'disable'
         resources:
           limits:
             memory: 200Mi
@@ -39,6 +41,8 @@ spec:
             cpu: 100m
             memory: 200Mi
         volumeMounts:
+        - name: fluentd-config
+          mountPath: /fluentd/etc
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
@@ -46,6 +50,9 @@ spec:
           readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: fluentd-config
+        configMap:
+          name: fluentd-config
       - name: varlog
         hostPath:
           path: /var/log
