@@ -1,0 +1,13 @@
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: vardata
+    hostPath:
+      type: ""
+      path: /var/data
+
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: vardata
+    mountPath: /var/data

@@ -1,0 +1,10 @@
+resources:
+  - ../../base
+
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+      name: fluentd
+    path: daemonset_volume_patch.yaml
