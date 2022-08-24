@@ -40,7 +40,7 @@ File names have the following structure:
 - `*_patch*.yaml` "patch" resources created in the base layer. These don't have to configurable, eg. `overlays/cloud/daemonset_volume_patch.yaml`
 - `*.yaml` are plain Kubernetes YAML files that don't require any customization; however they could be "patched" in an overlay. eg. `base/deployment.yaml` is patched by both overlays.
 - `*.conf` files contain the FluentD configuration
-- 
+
 ## Deployment Instructions
 - Export the environment variables that need to be substituted into `fluentd.properties.yaml`:
 
