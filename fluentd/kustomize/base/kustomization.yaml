@@ -6,7 +6,7 @@ namespace: fluentd
 configMapGenerator:
   - name: fluentd-config
     files:
-      - ./conf/fluent.conf
-      - ./conf/apps.conf
-      - ./conf/ingress.conf
-      - ./conf/output.conf
+      - conf/fluent.conf
+      - conf/apps.conf
+      - conf/ingress.conf
+      - conf/output.conf
