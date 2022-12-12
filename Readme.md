@@ -45,9 +45,10 @@ File names have the following structure:
 - Export the environment variables that need to be substituted into `fluentd.properties.yaml`:
 
 ```
-export ELASTIC_SEARCH_HOSTS=http://elasticsearch4.eanadev.org:9200,http://elasticsearch5.eanadev.org:9200,http://elasticsearch6.eanadev.org:9200
-export ELASTIC_SEARCH_INDEX=fluentd-k8s
+export ELASTIC_SEARCH_HOSTS=${ELASTICSEARCH_HOSTS}
+export ELASTIC_SEARCH_INDEX=${ELASTICSEARCH_INDEX}
 ```
+where `${ELASTICSEARCH_HOSTS}` is a comma-separated list of URLs to Elasticsearch instances and `${ELASTICSEARCH_INDEX}` is a string prefix to be used for indices for logs in Elasticsearch.
 
 - run the envsubst command:
 ```
