@@ -29,6 +29,8 @@ spec:
             value: "${ELASTIC_SEARCH_HOSTS}"
           - name:  EANA_ELASTICSEARCH_INDEX
             value: "${ELASTIC_SEARCH_INDEX}"
+          - name:  EANA_K8S_CLUSTER
+            value: "${EANA_K8S_CLUSTER}"
           - name:  FLUENTD_SYSTEMD_CONF
             value: 'disable'
           - name: K8S_NODE_NAME
