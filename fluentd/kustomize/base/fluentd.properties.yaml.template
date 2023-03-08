@@ -21,7 +21,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: fluentd
-        image: europeana/fluentd:EA-3308_multi_patterns
+        image: europeana/fluentd:v1.1.0
         env:
          # Only supports one host: https://github.com/fluent/fluentd/issues/2957
          # We need to override the plugin to distribute logs across our ES cluster
