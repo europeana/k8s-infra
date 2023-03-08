@@ -10,7 +10,7 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
      && apt-get install \
      -y --no-install-recommends \
      $buildDeps \
-     && fluent-gem install fluent-plugin-geoip \
+    && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
     && rm -rf /var/lib/apt/lists/* \
     # removes GeoIP database so we re-download below
     && gem sources --clear-all \
