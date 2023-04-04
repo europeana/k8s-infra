@@ -18,5 +18,5 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
     && mkdir -p /usr/share/geoip \
     && wget -P /usr/share/geoip/ https://git.io/GeoLite2-City.mmdb
 
-# user created in base image
-USER fluent
+# user created in base image (PE: added by Immanuel in March 2023, but results in permission issues)
+#USER fluent
