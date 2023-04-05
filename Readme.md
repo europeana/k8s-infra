@@ -61,6 +61,13 @@ kustomize build ./fluentd/base
 kubectl apply -k ./fluentd/base
 ```
 
+Alternatively when a fresh local installation of Fluentd the following plugins/gems are also needed
+* fluent-plugin-concat
+* fluent-plugin-multi-format-parser
+* fluent-plugin-rewrite-tag-filter
+* fluent-plugin-kubernetes_metadata_filter
+
+
 ### IBM Cloud Deployment
 ```
 kustomize build ./fluentd/overlays/cloud
