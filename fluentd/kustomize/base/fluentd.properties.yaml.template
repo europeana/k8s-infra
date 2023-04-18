@@ -32,7 +32,7 @@ spec:
           - name:  EANA_TRANSLATE_ELK_HOST
             value: "${ELASTIC_TRANSLATE_HOST}"
           - name:  EANA_TRANSLATE_INDEX
-            value  "${ELASTIC_TRANSLATE_INDEX}"
+            value: "${ELASTIC_TRANSLATE_INDEX}"
           - name:  EANA_K8S_CLUSTER
             value: "${EANA_K8S_CLUSTER}"
           - name:  FLUENTD_SYSTEMD_CONF
