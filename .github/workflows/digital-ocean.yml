@@ -58,7 +58,8 @@ jobs:
             --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
       -
         name: Annotate with cluster name
-        run: echo "::notice ::Created DigitalOcean cluster ${{ github.event.inputs.k8s-cluster-name }}"
+        run: |
+          echo "::notice ::Cluster name: ${{ github.event.inputs.k8s-cluster-name }}"
       -
         name: Annotate with node IPs
         run: |
