@@ -175,7 +175,7 @@ jobs:
           wget --quiet https://github.com/rancher/cli/releases/download/v${{ vars.RANCHER_CLI_VERSION }}/rancher-linux-amd64-v${{ vars.RANCHER_CLI_VERSION }}.tar.gz
           tar xf rancher-linux-amd64-v${{ vars.RANCHER_CLI_VERSION }}.tar.gz
           mv rancher-v${{ vars.RANCHER_CLI_VERSION }}/rancher /usr/local/bin
-          rancher version
+          rancher --version
       -
         name: Login to Rancher
         run: |
