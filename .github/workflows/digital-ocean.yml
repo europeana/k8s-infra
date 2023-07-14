@@ -54,3 +54,6 @@ jobs:
             --size ${{ github.event.inputs.k8s-node-size }} \
             --count ${{ github.event.inputs.k8s-node-count }} \
             --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
+      -
+        name: Annotate with cluster name
+        run: echo "::notice ::Created DigitalOcean cluster ${{ github.event.inputs.k8s-cluster-name }}"
