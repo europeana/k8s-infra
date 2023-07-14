@@ -95,4 +95,5 @@ jobs:
           echo "ip=${K8S_LOAD_BALANCER_IP}" >> $GITHUB_OUTPUT
       -
         name: Annotate with load balancer IP
-        run: echo "::notice ::Load balancer IP: ${{ steps.load-balancer.outputs.ip }}"
+        run: |
+          echo "::notice ::Load balancer IP: ${{ steps.load-balancer.outputs.ip }}"
