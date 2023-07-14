@@ -182,7 +182,7 @@ jobs:
           rancher cluster create --import ${RANCHER_CLUSTER_NAME}
           rancher cluster import ${RANCHER_CLUSTER_NAME} --quiet | head -n 1 > ./rancher-import.sh
           sh rancher-import.sh
-          rancer wait ${RANCHER_CLUSTER_NAME}
+          rancher wait ${RANCHER_CLUSTER_NAME}
       -
         name: Annotate with Rancher admin URL
         run: |
