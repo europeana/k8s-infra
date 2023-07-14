@@ -35,6 +35,8 @@ jobs:
   create-cluster:
     runs-on: ubuntu-latest
     environment: DigitalOcean
+    outputs:
+      load-balancer-ip: ${{ steps.load-balancer.outputs.ip }}
     steps:
       -
         name: Install doctl
@@ -57,3 +59,40 @@ jobs:
       -
         name: Annotate with cluster name
         run: echo "::notice ::Created DigitalOcean cluster ${{ github.event.inputs.k8s-cluster-name }}"
+      -
+        name: Annotate with node IPs
+        run: |
+          K8S_NODE_IPS="$(
+            kubectl get nodes --output jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+          )"
+          echo "::notice ::Cluster node IPs: ${K8S_NODE_IPS}"
+      -
+        name: Wait for ingress-nginx namespace
+        run: |
+          while [ -z "$(kubectl get namespace ingress-nginx --ignore-not-found 2>/dev/null)" ]; do
+            sleep 5
+          done
+      -
+        name: Wait for ingress-nginx/ingress-nginx-controller LoadBalancer
+        run: |
+          while [ -z "$(kubectl get service -n ingress-nginx ingress-nginx-controller --ignore-not-found -o jsonpath='{.status.loadBalancer.ingress}' 2>/dev/null)" ]; do
+            sleep 5
+          done
+      -
+        name: Get load balancer IP
+        id: load-balancer
+        run: |
+          K8S_LOAD_BALANCER_IP="$(
+            kubectl get services \
+              -n ingress-nginx \
+              ingress-nginx-controller \
+              --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
+          )"
+          if [ "${K8S_LOAD_BALANCER_IP}" = "" ]; then
+            echo "Failed to get load balancer IP."
+            exit 1
+          fi
+          echo "ip=${K8S_LOAD_BALANCER_IP}" >> $GITHUB_OUTPUT
+      -
+        name: Annotate with load balancer IP
+        run: echo "::notice ::Load balancer IP: ${{ steps.load-balancer.outputs.ip }}"
