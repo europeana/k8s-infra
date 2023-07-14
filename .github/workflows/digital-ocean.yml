@@ -32,11 +32,9 @@ on:
         default: ingress-nginx,monitoring,cert-manager
 
 jobs:
-  create-cluster:
+  k8s-cluster:
     runs-on: ubuntu-latest
     environment: DigitalOcean
-    outputs:
-      load-balancer-ip: ${{ steps.load-balancer.outputs.ip }}
     steps:
       -
         name: Install doctl
@@ -57,6 +55,12 @@ jobs:
             --count ${{ github.event.inputs.k8s-node-count }} \
             --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
       -
+        name: Cache kubeconfig
+        uses: actions/cache@v3
+        with:
+          path: ~/.kube/config
+          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
+      -
         name: Annotate with cluster name
         run: |
           echo "::notice ::Cluster name: ${{ github.event.inputs.k8s-cluster-name }}"
@@ -71,23 +75,40 @@ jobs:
         name: Create custom resources
         run: |
           kubectl create namespace production
+  load-balancer:
+    # TODO: only if ingress-nginx 1-click app installed
+    needs: [k8s-cluster]
+    runs-on: ubuntu-latest
+    env:
+      RANCHER_CLUSTER_NAME: do-${{ github.event.inputs.k8s-cluster-name }}
+    outputs:
+      ip: ${{ steps.load-balancer.outputs.ip }}
+    steps:
+      -
+        name: Restore cached kubeconfig
+        id: cache-kubeconfig
+        uses: actions/cache@v3
+        with:
+          path: ~/.kube/config
+          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
+      -
+        name: Check kubeconfig
+        run: |
+          kubectl get nodes
       -
         name: Wait for ingress-nginx namespace
-        # TODO: only if ingress-nginx 1-click app installed
         run: |
           while [ -z "$(kubectl get namespace ingress-nginx --ignore-not-found 2>/dev/null)" ]; do
             sleep 5
           done
       -
         name: Wait for ingress-nginx/ingress-nginx-controller LoadBalancer
-        # TODO: only if ingress-nginx 1-click app installed
         run: |
           while [ -z "$(kubectl get service -n ingress-nginx ingress-nginx-controller --ignore-not-found -o jsonpath='{.status.loadBalancer.ingress}' 2>/dev/null)" ]; do
             sleep 5
           done
       -
         name: Get load balancer IP
-        # TODO: only if ingress-nginx 1-click app installed
         id: load-balancer
         run: |
           K8S_LOAD_BALANCER_IP="$(
@@ -106,7 +127,7 @@ jobs:
         run: |
           echo "::notice ::Load balancer IP: ${{ steps.load-balancer.outputs.ip }}"
   dns-entry:
-    needs: [create-cluster]
+    needs: [load-balancer]
     runs-on: ubuntu-latest
     environment: Cloudflare
     env:
@@ -120,7 +141,7 @@ jobs:
             --header 'Content-Type: application/json' \
             --header "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             --data '{
-            "content": "'${{ needs.create-cluster.outputs.load-balancer-ip }}'",
+            "content": "'${{ needs.load-balancer.outputs.ip }}'",
             "name": "'${K8S_LOAD_BALANCER_FQDN}'",
             "type": "A",
             "ttl": 1
@@ -129,3 +150,38 @@ jobs:
         name: Annotate with load balancer FQDN
         run: |
           echo "::notice ::Load balancer FQDN: ${K8S_LOAD_BALANCER_FQDN}"
+  rancher-import:
+    needs: [k8s-cluster]
+    runs-on: ubuntu-latest
+    environment: Rancher
+    env:
+      RANCHER_CLUSTER_NAME: do-${{ github.event.inputs.k8s-cluster-name }}
+    steps:
+      -
+        name: Restore cached kubeconfig
+        id: cache-kubeconfig
+        uses: actions/cache@v3
+        with:
+          path: ~/.kube/config
+          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
+      -
+        name: Check kubeconfig
+        run: |
+          kubectl get nodes
+      -
+        name: Install rancher CLI
+        run: |
+          wget --quiet https://github.com/rancher/cli/releases/download/v${{ vars.RANCHER_CLI_VERSION }}/rancher-linux-amd64-v${{ vars.RANCHER_CLI_VERSION }}.tar.gz
+          tar xf rancher-linux-amd64-v${{ vars.RANCHER_CLI_VERSION }}.tar.gz
+          mv rancher-v${{ vars.RANCHER_CLI_VERSION }}/rancher /usr/local/bin
+          rancher version
+      -
+        name: Login to Rancher
+        run: |
+          rancher login --token ${{ secrets.RANCHER_TOKEN }} --context ${{ vars.RANCHER_CONTEXT }} ${{ vars.RANCHER_URL }}
+      -
+        name: Import cluster into Rancher
+        run: |
+          rancher cluster create --import ${RANCHER_CLUSTER_NAME}
+          rancher cluster import ${RANCHER_CLUSTER_NAME} --quiet | head -n 1 > ./rancher-import.sh
+          sh rancher-import.sh
