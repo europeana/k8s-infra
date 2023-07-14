@@ -1,0 +1,42 @@
+# 1. Creates a new Kubernetes cluster on DigitalOcean, with NGINX ingress controller,
+#    monitoring and Cert Manager pre-installed
+# 2. Creates a DNS entry on Cloudflare pointed at the cluster's load balancer</li>
+
+name: DigitalOcean
+
+on: workflow_dispatch
+  inputs:
+    k8s-cluster-name:
+      description: 'Cluster name'
+      required: true
+    k8s-cluster-region:
+      description: 'Cluster region (fra1/ams3)'
+      required: true
+      default: fra1
+    k8s-cluster-version:
+      description: 'Cluster version (1.25/1.26/1.27)'
+      required: true
+      default: 1.25
+    k8s-node-size:
+      description: 'Node size (s-2vcpu-4gb/s-4vcpu-8gb/s-8vcpu-16gb)'
+      required: true
+      default: s-2vcpu-4gb
+    k8s-node-count:
+      description: 'Node count'
+      required: true
+      default: '3'
+
+env:
+  DOCTL_VERSION: 1.97.0
+
+jobs:
+  create-cluster:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Install doctl
+        run: |
+          wget --quiet https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
+          tar xf doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
+          rm doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
+          doctl version
