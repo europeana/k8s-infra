@@ -26,10 +26,6 @@ on:
         description: 'Node count'
         required: true
         default: '3'
-      k8s-1-click-apps:
-        description: '1-click apps to install'
-        required: true
-        default: ingress-nginx,monitoring,cert-manager
 
 jobs:
   k8s-cluster:
@@ -59,7 +55,7 @@ jobs:
             --version ${{ github.event.inputs.k8s-cluster-version }} \
             --size ${{ github.event.inputs.k8s-node-size }} \
             --count ${{ github.event.inputs.k8s-node-count }} \
-            --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
+            --1-clicks ingress-nginx,cert-manager
       -
         name: Annotate with cluster name
         run: |
@@ -186,3 +182,9 @@ jobs:
           rancher cluster create --import ${RANCHER_CLUSTER_NAME}
           rancher cluster import ${RANCHER_CLUSTER_NAME} --quiet | head -n 1 > ./rancher-import.sh
           sh rancher-import.sh
+          rancer wait ${RANCHER_CLUSTER_NAME}
+      -
+        name: Annotate with Rancher admin URL
+        run: |
+          RANCHER_ADMIN_URL=$(rancher inspect --type cluster ${RANCHER_CLUSTER_NAME} | jq -Mr .id)
+          echo "::notice ::Rancher admin URL: ${RANCHER_ADMIN_URL}"
