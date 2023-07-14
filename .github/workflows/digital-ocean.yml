@@ -17,7 +17,7 @@ on:
       k8s-cluster-version:
         description: 'Cluster version (1.25/1.26/1.27)'
         required: true
-        default: 1.25
+        default: '1.25'
       k8s-node-size:
         description: 'Node size (s-2vcpu-4gb/s-4vcpu-8gb/s-8vcpu-16gb)'
         required: true
@@ -26,19 +26,31 @@ on:
         description: 'Node count'
         required: true
         default: '3'
-
-env:
-  DOCTL_VERSION: 1.97.0
+      k8s-1-click-apps:
+        description: '1-click apps to install'
+        required: true
+        default: ingress-nginx,monitoring,cert-manager
 
 jobs:
   create-cluster:
     runs-on: ubuntu-latest
+    environment: DigitalOcean
     steps:
       -
         name: Install doctl
         run: |
-          wget --quiet https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
-          tar xf doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
+          wget --quiet https://github.com/digitalocean/doctl/releases/download/v${{ vars.DOCTL_VERSION }}/doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz
+          tar xf doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz
           mv doctl /usr/local/bin
-          rm doctl-${DOCTL_VERSION}-linux-amd64.tar.gz
+          rm doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz
           doctl version
+      -
+        name: Create cluster
+        run: |
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl kubernetes cluster create ${{ github.event.inputs.k8s-cluster-name }} \
+          	--region ${{ github.event.inputs.k8s-cluster-region }} \
+            --version ${{ github.event.inputs.k8s-cluster-version }} \
+            --size ${{ github.event.inputs.k8s-node-size }} \
+            --count ${{ github.event.inputs.k8s-node-count }} \
+            --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
