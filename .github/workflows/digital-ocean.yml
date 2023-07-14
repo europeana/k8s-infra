@@ -37,6 +37,12 @@ jobs:
     environment: DigitalOcean
     steps:
       -
+        name: Cache doctl
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/bin/doctl
+          key: doctl-${{ vars.DOCTL_VERSION }}
+      -
         name: Install doctl
         run: |
           wget --quiet https://github.com/digitalocean/doctl/releases/download/v${{ vars.DOCTL_VERSION }}/doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz
@@ -54,12 +60,6 @@ jobs:
             --size ${{ github.event.inputs.k8s-node-size }} \
             --count ${{ github.event.inputs.k8s-node-count }} \
             --1-clicks ${{ github.event.inputs.k8s-1-click-apps }}
-      -
-        name: Cache kubeconfig
-        uses: actions/cache@v3
-        with:
-          path: ~/.kube/config
-          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
       -
         name: Annotate with cluster name
         run: |
@@ -79,21 +79,21 @@ jobs:
     # TODO: only if ingress-nginx 1-click app installed
     needs: [k8s-cluster]
     runs-on: ubuntu-latest
-    env:
-      RANCHER_CLUSTER_NAME: do-${{ github.event.inputs.k8s-cluster-name }}
+    environment: DigitalOcean
     outputs:
       ip: ${{ steps.load-balancer.outputs.ip }}
     steps:
       -
-        name: Restore cached kubeconfig
-        id: cache-kubeconfig
+        name: Restore cached doctl
         uses: actions/cache@v3
         with:
-          path: ~/.kube/config
-          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
+          path: /usr/local/bin/doctl
+          key: doctl-${{ vars.DOCTL_VERSION }}
       -
-        name: Check kubeconfig
+        name: Get kubeconfig from DigitalOcean
         run: |
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl kubernetes cluster kubeconfig save ${{ github.event.inputs.k8s-cluster-name }}
           kubectl get nodes
       -
         name: Wait for ingress-nginx namespace
@@ -153,20 +153,21 @@ jobs:
   rancher-import:
     needs: [k8s-cluster]
     runs-on: ubuntu-latest
-    environment: Rancher
+    environment: DigitalOcean
     env:
       RANCHER_CLUSTER_NAME: do-${{ github.event.inputs.k8s-cluster-name }}
     steps:
       -
-        name: Restore cached kubeconfig
-        id: cache-kubeconfig
+        name: Restore cached doctl
         uses: actions/cache@v3
         with:
-          path: ~/.kube/config
-          key: kubeconfig-${{ github.event.inputs.k8s-cluster-name }}
+          path: /usr/local/bin/doctl
+          key: doctl-${{ vars.DOCTL_VERSION }}
       -
-        name: Check kubeconfig
+        name: Get kubeconfig from DigitalOcean
         run: |
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl kubernetes cluster kubeconfig save ${{ github.event.inputs.k8s-cluster-name }}
           kubectl get nodes
       -
         name: Install rancher CLI
