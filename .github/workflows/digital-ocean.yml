@@ -87,6 +87,7 @@ jobs:
           done
       -
         name: Get load balancer IP
+        # TODO: only if ingress-nginx 1-click app installed
         id: load-balancer
         run: |
           K8S_LOAD_BALANCER_IP="$(
@@ -104,3 +105,27 @@ jobs:
         name: Annotate with load balancer IP
         run: |
           echo "::notice ::Load balancer IP: ${{ steps.load-balancer.outputs.ip }}"
+  dns-entry:
+    needs: [create-cluster]
+    runs-on: ubuntu-latest
+    environment: Cloudflare
+    env:
+      K8S_LOAD_BALANCER_FQDN: do-k8s-${{ github.event.inputs.k8s-cluster-name }}.eanadev.org
+    steps:
+      -
+        name: Create DNS entry on Cloudflare
+        run: |
+          curl --request POST \
+            --url https://api.cloudflare.com/client/v4/zones/${{ vars.CLOUDFLARE_ZONE_ID }}/dns_records \
+            --header 'Content-Type: application/json' \
+            --header "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            --data '{
+            "content": "'${{ needs.create-cluster.outputs.load-balancer-ip }}'",
+            "name": "'${K8S_LOAD_BALANCER_FQDN}'",
+            "type": "A",
+            "ttl": 1
+          }'
+      -
+        name: Annotate with load balancer FQDN
+        run: |
+          echo "::notice ::Load balancer FQDN: ${K8S_LOAD_BALANCER_FQDN}"
