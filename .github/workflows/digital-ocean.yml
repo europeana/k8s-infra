@@ -68,13 +68,19 @@ jobs:
           )"
           echo "::notice ::Cluster node IPs: ${K8S_NODE_IPS}"
       -
+        name: Create custom resources
+        run: |
+          kubectl create namespace production
+      -
         name: Wait for ingress-nginx namespace
+        # TODO: only if ingress-nginx 1-click app installed
         run: |
           while [ -z "$(kubectl get namespace ingress-nginx --ignore-not-found 2>/dev/null)" ]; do
             sleep 5
           done
       -
         name: Wait for ingress-nginx/ingress-nginx-controller LoadBalancer
+        # TODO: only if ingress-nginx 1-click app installed
         run: |
           while [ -z "$(kubectl get service -n ingress-nginx ingress-nginx-controller --ignore-not-found -o jsonpath='{.status.loadBalancer.ingress}' 2>/dev/null)" ]; do
             sleep 5
