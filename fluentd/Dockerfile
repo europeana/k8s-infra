@@ -10,13 +10,14 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
      && apt-get install \
      -y --no-install-recommends \
      $buildDeps \
-    && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
+    && fluent-gem install fluent-plugin-multi-format-parser \
+#    && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
     && rm -rf /var/lib/apt/lists/* \
     # removes GeoIP database so we re-download below
-    && gem sources --clear-all \
-    && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
-    && mkdir -p /usr/share/geoip \
-    && wget -P /usr/share/geoip/ https://git.io/GeoLite2-City.mmdb
+#    && gem sources --clear-all \
+#    && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
+#    && mkdir -p /usr/share/geoip \
+#    && wget -P /usr/share/geoip/ https://git.io/GeoLite2-City.mmdb
 
 # user created in base image (PE Apr 2023 - commented out as this is causing issues)
 #USER fluent
