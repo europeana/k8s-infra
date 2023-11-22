@@ -9,12 +9,11 @@ USER root
 # autoconf is not required now, but try including it if the build fails again
 RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxminddb-dev wget" \
   && apt-get update \
-  && apt-get install \
-  -y --no-install-recommends \
-  $buildDeps \
+  && apt-get install -y --no-install-recommends $buildDeps \
   && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
   && rm -rf /var/lib/apt/lists/* \
-  # removes GeoIP database so we re-download below
+  # removes GeoIP database so we re-download below \
+  && gem search -rd fluent-plugin \
   && gem sources --clear-all \
   && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
   && mkdir -p /usr/share/geoip \
