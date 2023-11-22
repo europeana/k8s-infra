@@ -13,7 +13,7 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev automake autoconf libtool l
   && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
   && rm -rf /var/lib/apt/lists/* \
   # removes GeoIP database so we re-download below \
-  && gem search -rd fluent-plugin \
+#  && gem search -rd fluent-plugin \
   && gem sources --clear-all \
   && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
   && mkdir -p /usr/share/geoip \
