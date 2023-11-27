@@ -8,7 +8,7 @@ USER root
 
 # (MD nov 23) we now need to include automake and libtool dependencies to build fluent-plugin-geoip
 # autoconf is not required now, but try including it if the build fails again
-RUN buildDeps="build-essential libgeoip-dev ruby-dev automake autoconf libtool libmaxminddb-dev wget" \
+RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxminddb-dev wget" \
   && apt-get update \
   && apt-get install -y --no-install-recommends $buildDeps \
   && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
