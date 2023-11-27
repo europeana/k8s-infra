@@ -1,5 +1,6 @@
 # Image pushed as europeana/fluentd
-FROM fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
+#FROM fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
+FROM fluent/fluentd-kubernetes-daemonset:v1.16.1-debian-elasticsearch
 
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 
