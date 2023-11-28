@@ -1,6 +1,6 @@
 # Image pushed as europeana/fluentd
 #FROM fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
-FROM fluent/fluentd-kubernetes-daemonset:v1.16.1-debian-elasticsearch7-1.0
+FROM fluent/fluentd-kubernetes-daemonset:v1.16.2-debian-elasticsearch7-1.0
 
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 
@@ -8,7 +8,8 @@ USER root
 
 # (MD nov 23) we now need to include automake and libtool dependencies to build fluent-plugin-geoip
 # autoconf is not required now, but try including it if the build fails again
-RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxminddb-dev wget" \
+#RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxminddb-dev wget" \
+RUN buildDeps="build-essential libgeoip-dev ruby-dev libmaxminddb-dev wget libtool automake autoconf" \
   && apt-get update \
   && apt-get install -y --no-install-recommends $buildDeps \
   && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
@@ -19,6 +20,9 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxmind
   && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
   && mkdir -p /usr/share/geoip \
   && wget -P /usr/share/geoip/ https://git.io/GeoLite2-City.mmdb
+
+# for debugging
+RUN fluent-gem list
 
 # user created in base image (PE Apr 2023 - commented out as this is causing issues)
 #USER fluent
