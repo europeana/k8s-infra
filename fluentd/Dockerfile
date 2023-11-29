@@ -5,7 +5,8 @@ LABEL Author="Europeana Foundation <development@europeana.eu>"
 
 USER root
 
-RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
+RUN buildDeps="build-essential libgeoip-dev ruby-dev libmaxminddb-dev wget libtool automake autoconf" \
+#RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
      && apt-get update \
      && apt-get install \
      -y --no-install-recommends \
