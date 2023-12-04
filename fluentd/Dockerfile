@@ -5,6 +5,8 @@ LABEL Author="Europeana Foundation <development@europeana.eu>"
 
 USER root
 
+# (MD nov 23) we now need to include automake and libtool dependencies to build fluent-plugin-geoip
+#RUN buildDeps="build-essential libgeoip-dev ruby-dev automake libtool libmaxminddb-dev wget" \
 RUN buildDeps="build-essential libgeoip-dev ruby-dev libmaxminddb-dev wget libtool automake autoconf" \
      && apt-get update \
      && apt-get install \
