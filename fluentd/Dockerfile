@@ -5,11 +5,9 @@ LABEL Author="Europeana Foundation <development@europeana.eu>"
 
 USER root
 
-RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget" \
-     && apt-get update \
-     && apt-get install \
-     -y --no-install-recommends \
-     $buildDeps \
+RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget libtool automake autoconf" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends $buildDeps \
     && fluent-gem install fluent-plugin-geoip fluent-plugin-multi-format-parser \
     && rm -rf /var/lib/apt/lists/* \
     # removes GeoIP database so we re-download below
