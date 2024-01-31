@@ -15,3 +15,4 @@ RUN buildDeps="build-essential libgeoip-dev ruby-dev  libmaxminddb-dev wget libt
     && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem \
     && mkdir -p /usr/share/geoip \
     && wget -P /usr/share/geoip/ https://git.io/GeoLite2-City.mmdb
+

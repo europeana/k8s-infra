@@ -2,3 +2,8 @@
 *.env
 *.properties.yaml
 *.user.conf
+*.iml
+
+local*
+simple_test.conf
+*.log
