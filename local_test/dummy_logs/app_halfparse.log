@@ -1,3 +1,3 @@
-2023-03-29T08:57:46.169754289Z stdout F 08:57:45.169 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 [http-nio-8080-exec-9] - Opened connection [connectionId{localValue:3, serverValue:677}] to chaos2.eanadev.org:27017
-2023-03-29T08:57:47.570365819Z stdout F 08:57:45.570 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 [http-nio-8080-exec-9] - Opened connection [connectionId{localValue:4, serverValue:678}] to chaos2.eanadev.org:27017
-2023-03-29T08:57:47.670365819Z stdout F 08:57:46.670 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 [http-nio-8080-exec-9] - Opened connection [connectionId{localValue:5, serverValue:678}] to chaos2.eanadev.org:27017
+2023-03-29T08:57:46.169754289Z stdout F 08:57:45.169 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 - Opened connection [connectionId{localValue:3, serverValue:677}] to chaos2.eanadev.org:27017
+2023-03-29T08:57:47.570365819Z stdout F 08:57:45.570 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 - Opened connection [connectionId{localValue:4, serverValue:678}] to chaos2.eanadev.org:27017
+2023-03-29T08:57:47.670365819Z stdout F 08:57:46.670 INFO com.mongodb.diagnostics.logging.SLF4JLogger:71 - Opened connection [connectionId{localValue:5, serverValue:678}] to chaos2.eanadev.org:27017
