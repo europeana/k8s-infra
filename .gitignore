@@ -4,6 +4,4 @@
 *.user.conf
 *.iml
 
-local*
-simple_test.conf
-*.log
+local_test/result/
