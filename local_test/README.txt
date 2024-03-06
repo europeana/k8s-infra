@@ -8,7 +8,7 @@ Furthermore the following fluentd plugins need to be installed.
 
 Moreover, we recommend setting the following environment variables
   export EANA_K8S_CLUSTER=localtest
-  export EXCLUDE_HOST_REGEX="/portal-js|^(contribute|contentful-proxy|media-proxy-js|styleguide|www)/"
+  export EXCLUDE_HOST_REGEX="/.dev.eanadev.org|^(portal-js|contribute|contentful-proxy|media-proxy-js|styleguide|www)/"
 
 To run simply open a terminal, go to this folder and run `fluentd -c local.conf'.
 The results will be written to files in the result folder.
