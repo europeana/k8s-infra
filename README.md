@@ -11,24 +11,24 @@ This folder consists of a Kustomize base layer and two patch layers: for local d
 The files below are required for deployment:
 
 ```
-fluentd:
-  ├── base
-  │    ├── fluentd.properties.yaml#
-  │    ├── fluentd.properties.yaml.template
-  │    ├── kustomization.yaml
-  │    └── conf
-  │         ├── filters.conf
-  │         ├── fluent.conf
-  │         ├── outputs.conf
-  │         └── sources.conf
-  └── overlays
-       ├── cloud
-       │    ├── deamonset_volume_patch.yaml
-       │    └── kustomization.yaml 
-       └── dev
-            ├── fluentd-ns.yaml
-            ├── fluentd-rbac.yaml
-            └── kustomization.yaml 
+    fluentd:
+      ├── base
+      │    ├── fluentd.properties.yaml#
+      │    ├── fluentd.properties.yaml.template
+      │    ├── kustomization.yaml
+      │    └── conf
+      │         ├── filters.conf
+      │         ├── fluent.conf
+      │         ├── outputs.conf
+      │         └── sources.conf
+      └── overlays
+           ├── cloud
+           │    ├── deamonset_volume_patch.yaml
+           │    └── kustomization.yaml 
+           └── dev
+                ├── fluentd-ns.yaml
+                ├── fluentd-rbac.yaml
+                └── kustomization.yaml 
  ```
 _# indicates a file not in version control_
 
@@ -60,6 +60,7 @@ envsubst < ./fluentd/base/fluentd.properties.yaml.template > ./fluentd/base/flue
 kustomize build ./fluentd/base
 kubectl apply -k ./fluentd/base
 ```
+or use go to the `local_test` folder and run the local copy of the configuration (see instructions there)
 
 ### IBM Cloud Deployment
 ```
